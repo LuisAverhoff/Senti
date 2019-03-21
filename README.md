@@ -4,8 +4,12 @@ This application allows users to make queries on a specific person or product an
 Main depenencies for this application are:
 
 - **React** - For efficient rendering of the UI
-- **Websockets** - to allow continuous streaming of data in real time 
+- **Websockets** - to allow continuous streaming of data in real time
 - **React-Charts 2.js** for data visualization.
+
+# Read Before Starting
+
+Before running this project, make sure that you have your senti server up and running. Once you have done that, make sure that in your `.env` file you initialize `REACT_APP_WEBSOCKET_URL` with the url that your senti server is running on.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
@@ -53,7 +57,7 @@ You can learn more in the [Create React App documentation](https://facebook.gith
 To learn React, check out the [React documentation](https://reactjs.org/).
 
 ## License
- 
+
 The MIT License (MIT)
 
 Copyright (c) 2019 Luis Manuel Averhoff
