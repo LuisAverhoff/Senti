@@ -1,33 +1,33 @@
-import React, { Component } from 'react'
-import Paper from '@material-ui/core/Paper'
-import IconButton from '@material-ui/core/IconButton'
-import SearchIcon from '@material-ui/icons/Search'
-import ClearIcon from '@material-ui/icons/Clear'
-import Input from '@material-ui/core/Input'
-import createStyles from '@material-ui/core/styles/createStyles'
-import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles'
-import classNames from 'classnames'
+import React, { Component } from "react"
+import Paper from "@material-ui/core/Paper"
+import IconButton from "@material-ui/core/IconButton"
+import SearchIcon from "@material-ui/icons/Search"
+import ClearIcon from "@material-ui/icons/Clear"
+import Input from "@material-ui/core/Input"
+import createStyles from "@material-ui/core/styles/createStyles"
+import withStyles, { WithStyles } from "@material-ui/core/styles/withStyles"
+import classNames from "classnames"
 
 const styles = createStyles({
   root: {
     height: 48,
-    display: 'flex',
-    justifyContent: 'space-between',
-    boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)',
-    '&:focus-within': {
-      boxShadow: '0 4px 9px rgba(0,0,0,0.3)'
+    display: "flex",
+    justifyContent: "space-between",
+    boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
+    "&:focus-within": {
+      boxShadow: "0 4px 9px rgba(0,0,0,0.3)"
     },
-    '&:hover': {
-      boxShadow: '0 4px 9px rgba(0,0,0,0.3)'
+    "&:hover": {
+      boxShadow: "0 4px 9px rgba(0,0,0,0.3)"
     }
   },
   iconButton: {
-    transform: 'scale(1, 1)',
-    transition: 'transform 200ms cubic-bezier(0.4, 0.0, 0.2, 1)'
+    transform: "scale(1, 1)",
+    transition: "transform 200ms cubic-bezier(0.4, 0.0, 0.2, 1)"
   },
   iconButtonHidden: {
-    transform: 'scale(0, 0)',
-    '& > $icon': {
+    transform: "scale(0, 0)",
+    "& > $icon": {
       opacity: 0
     }
   },
@@ -38,14 +38,14 @@ const styles = createStyles({
     marginRight: -48
   },
   icon: {
-    transition: 'opacity 200ms cubic-bezier(0.4, 0.0, 0.2, 1)'
+    transition: "opacity 200ms cubic-bezier(0.4, 0.0, 0.2, 1)"
   },
   input: {
-    width: '100%'
+    width: "100%"
   },
   searchContainer: {
-    margin: 'auto 16px',
-    width: 'calc(100% - 80px)'
+    margin: "auto 16px",
+    width: "calc(100% - 80px)"
   }
 })
 
@@ -102,16 +102,16 @@ interface SearchBarState {
 
 class SearchBar extends Component<SearchBarProps, SearchBarState> {
   static defaultProps = {
-    className: '',
-    closeIcon: <ClearIcon style={{ color: '#4483D9' }} />,
+    className: "",
+    closeIcon: <ClearIcon style={{ color: "#4483D9" }} />,
     disabled: false,
-    placeholder: 'search',
-    searchIcon: <SearchIcon style={{ color: '#4483D9' }} />,
+    placeholder: "search",
+    searchIcon: <SearchIcon style={{ color: "#4483D9" }} />,
     style: {},
-    value: ''
+    value: ""
   }
 
-  constructor(props: SearchBar['props']) {
+  constructor(props: SearchBar["props"]) {
     super(props)
     this.state = {
       value: this.props.value
@@ -120,11 +120,13 @@ class SearchBar extends Component<SearchBarProps, SearchBarState> {
 
   handleOnBlur = (_e: React.FocusEvent<HTMLDivElement>) => {
     if (this.state.value.trim().length === 0) {
-      this.setState({ value: '' })
+      this.setState({ value: "" })
     }
   }
 
-  handleOnChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  handleOnChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     this.setState({ value: e.target.value })
 
     if (this.props.onChange) {
@@ -133,17 +135,22 @@ class SearchBar extends Component<SearchBarProps, SearchBarState> {
   }
 
   handleCancelSearch = () => {
-    this.setState({ value: '' })
+    this.setState({ value: "" })
 
     if (this.props.onCancelSearch) {
       this.props.onCancelSearch()
     }
   }
 
-  handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    if (e.charCode === 13 || e.key === 'Enter') {
+  handleKeyUp = (
+    e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    if (e.charCode === 13 || e.key === "Enter") {
       this.handleSearchRequest()
-    } else if (this.props.cancelOnEscape && (e.charCode === 27 || e.key === 'Escape')) {
+    } else if (
+      this.props.cancelOnEscape &&
+      (e.charCode === 27 || e.key === "Escape")
+    ) {
       this.handleCancelSearch()
     }
   }
@@ -187,22 +194,24 @@ class SearchBar extends Component<SearchBarProps, SearchBarState> {
           onClick={this.handleSearchRequest}
           classes={{
             root: classNames(classes.iconButton, classes.searchIconButton, {
-              [classes.iconButtonHidden]: value !== ''
+              [classes.iconButtonHidden]: value !== ""
             }),
             disabled: classes.iconButtonDisabled
           }}
-          disabled={disabled}>
+          disabled={disabled}
+        >
           {React.cloneElement(searchIcon, { classes: { root: classes.icon } })}
         </IconButton>
         <IconButton
           onClick={this.handleCancelSearch}
           classes={{
             root: classNames(classes.iconButton, {
-              [classes.iconButtonHidden]: value === ''
+              [classes.iconButtonHidden]: value === ""
             }),
             disabled: classes.iconButtonDisabled
           }}
-          disabled={disabled}>
+          disabled={disabled}
+        >
           {React.cloneElement(closeIcon, { classes: { root: classes.icon } })}
         </IconButton>
       </Paper>

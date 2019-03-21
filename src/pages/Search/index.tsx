@@ -1,15 +1,14 @@
-import React, { Component } from "react";
-import Image from "react-simple-image";
-import { RouteComponentProps } from "react-router";
-import createStyles from "@material-ui/core/styles/createStyles";
-import withStyles, { WithStyles } from "@material-ui/core/styles/withStyles";
-import Divider from "@material-ui/core/Divider";
-import IconButton from "@material-ui/core/IconButton";
-import { ChartData } from "react-chartjs-2";
-import SearchBar from "../../components/Search";
-import ReactWebsocket from "../../components/Socket";
-import { LineChart } from "../../components/Charts";
-import { LogoSmall, LogoMedium, LogoLarge } from "../../assets/images/Logo";
+import React, { Component } from "react"
+import Image from "react-simple-image"
+import { RouteComponentProps } from "react-router"
+import createStyles from "@material-ui/core/styles/createStyles"
+import withStyles, { WithStyles } from "@material-ui/core/styles/withStyles"
+import Divider from "@material-ui/core/Divider"
+import IconButton from "@material-ui/core/IconButton"
+import SearchBar from "../../components/Search"
+import ReactWebsocket from "../../components/Socket"
+import { LineChart } from "../../components/Charts"
+import { LogoSmall, LogoMedium, LogoLarge } from "../../assets/images/Logo"
 
 const styles = createStyles({
   container: {
@@ -47,15 +46,15 @@ const styles = createStyles({
     marginRight: 50,
     width: "65%"
   }
-});
+})
 
 interface RouterProps {
-  query: string;
+  query: string
 }
 
 interface SearchState {
-  query: string;
-  data: ChartData<DataSet> | null;
+  query: string
+  data: Chart.ChartData
 }
 
 interface SearchProps
@@ -63,47 +62,56 @@ interface SearchProps
     RouteComponentProps<RouterProps> {}
 
 class SearchPage extends Component<SearchProps, SearchState> {
-  private webSocketRef = React.createRef<ReactWebsocket>();
+  private webSocketRef = React.createRef<ReactWebsocket>()
 
   constructor(props: SearchPage["props"]) {
-    super(props);
+    super(props)
 
     this.state = {
       query: this.props.match.params.query,
-      data: null
-    };
-  }
-
-  componentDidMount() {
-    const { query } = this.props.match.params;
-
-    if (this.webSocketRef.current) {
-      this.webSocketRef.current.sendMessage({ track: query });
+      data: { labels: [], datasets: [{ data: [] }] }
     }
   }
 
-  handleData = (data: any) => {
-    alert(data);
-  };
+  componentDidMount() {
+    const { query } = this.props.match.params
+
+    if (this.webSocketRef.current) {
+      this.webSocketRef.current.sendMessage({ track: query })
+    }
+  }
+
+  handleMessage = (message: any) => {
+    const { data } = this.state
+
+    this.setState({
+      data: {
+        labels: [...this.state.data.labels!, message["created_at"]],
+        datasets: [
+          { data: [...this.state.data.datasets![0].data!, message["polarity"]] }
+        ]
+      }
+    })
+  }
 
   HandleSearchRequest(query: string) {
     if (query) {
       if (this.webSocketRef.current) {
-        this.webSocketRef.current.sendMessage({ track: query });
+        this.webSocketRef.current.sendMessage({ track: query })
       }
 
-      this.props.history.push(`/search/${query}`);
+      this.props.history.push(`/search/${query}`)
     }
   }
 
   returnToHomePage() {
-    this.props.history.push("/");
+    this.props.history.push("/")
   }
 
   render() {
-    const { classes } = this.props;
-    const { query, data } = this.state;
-    const queryParam = this.props.match.params.query;
+    const { classes } = this.props
+    const { query, data } = this.state
+    const queryParam = this.props.match.params.query
 
     return (
       <div className={classes.container}>
@@ -115,7 +123,7 @@ class SearchPage extends Component<SearchProps, SearchState> {
           >
             <Image
               src={LogoSmall}
-              alt="Logo"
+              alt='Logo'
               srcSet={{
                 "1x": LogoSmall,
                 "2x": LogoMedium,
@@ -149,7 +157,19 @@ class SearchPage extends Component<SearchProps, SearchState> {
                   display: true,
                   fontSize: 24,
                   fullWidth: true,
-                  text: "Popularity of " + queryParam + " Over Time"
+                  text: "Polarity of " + queryParam + " Over Time"
+                },
+                scales: {
+                  yAxes: [
+                    {
+                      ticks: {
+                        beginAtZero: true,
+                        min: -1,
+                        max: 1,
+                        stepSize: 0.1
+                      }
+                    }
+                  ]
                 }
               }}
             />
@@ -158,16 +178,16 @@ class SearchPage extends Component<SearchProps, SearchState> {
         </div>
         <ReactWebsocket
           url={process.env.REACT_APP_WEBSOCKET_URL}
-          onMessage={this.handleData}
+          onMessage={this.handleMessage}
           autoReconnect={true}
           debug={process.env.NODE_ENV === "development" ? true : false}
           ref={this.webSocketRef}
         />
       </div>
-    );
+    )
   }
 }
 
-const Search = withStyles(styles)(SearchPage);
+const Search = withStyles(styles)(SearchPage)
 
-export { Search };
+export { Search }

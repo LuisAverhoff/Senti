@@ -1,10 +1,10 @@
-import React, { Component } from "react";
-import Image from "react-simple-image";
-import { RouteComponentProps } from "react-router";
-import createStyles from "@material-ui/core/styles/createStyles";
-import withStyles, { WithStyles } from "@material-ui/core/styles/withStyles";
-import SearchBar from "../../components/Search";
-import { LogoSmall, LogoMedium, LogoLarge } from "../../assets/images/Logo";
+import React, { Component } from "react"
+import Image from "react-simple-image"
+import { RouteComponentProps } from "react-router"
+import createStyles from "@material-ui/core/styles/createStyles"
+import withStyles, { WithStyles } from "@material-ui/core/styles/withStyles"
+import SearchBar from "../../components/Search"
+import { LogoSmall, LogoMedium, LogoLarge } from "../../assets/images/Logo"
 
 const styles = createStyles({
   container: {
@@ -24,10 +24,10 @@ const styles = createStyles({
     flexDirection: "row",
     marginTop: 15
   }
-});
+})
 
 interface HomeState {
-  query: string;
+  query: string
 }
 
 interface HomeProps
@@ -37,24 +37,24 @@ interface HomeProps
 class HomePage extends Component<HomeProps, HomeState> {
   state = {
     query: ""
-  };
+  }
 
   HandleSearchRequest(query: string) {
     if (query) {
-      this.props.history.push(`/search/${query}`);
+      this.props.history.push(`/search/${query}`)
     }
   }
 
   render() {
-    const { query } = this.state;
-    const { classes } = this.props;
+    const { query } = this.state
+    const { classes } = this.props
 
     return (
       <div className={classes.container}>
         <div className={classes.logoContainer}>
           <Image
             src={LogoSmall}
-            alt="Logo"
+            alt='Logo'
             srcSet={{
               "200w": LogoSmall,
               "300w": LogoMedium,
@@ -80,10 +80,10 @@ class HomePage extends Component<HomeProps, HomeState> {
           />
         </div>
       </div>
-    );
+    )
   }
 }
 
-const Home = withStyles(styles)(HomePage);
+const Home = withStyles(styles)(HomePage)
 
-export { Home };
+export { Home }
