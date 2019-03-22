@@ -1,10 +1,10 @@
 import React from "react"
-import { Line } from "react-chartjs-2"
+import { Pie } from "react-chartjs-2"
 import { ChartOptions } from "chart.js"
 import { CreateSkeletonLoader } from "../../Loader"
-import { chartRectSkeleton } from "../../../constants"
+import { PieRectSkeleton } from "../../../constants"
 
-interface LineChartProps {
+export interface ChartProps {
   /*
    * The data that will be displayed on the chart.
    */
@@ -23,7 +23,7 @@ interface LineChartProps {
   options?: ChartOptions
 }
 
-const LineChart: React.FunctionComponent<LineChartProps> = props => {
+const PieChart: React.FunctionComponent<ChartProps> = props => {
   const { data, width, height, ...rest } = props
 
   /* 
@@ -31,24 +31,25 @@ const LineChart: React.FunctionComponent<LineChartProps> = props => {
     simply because we initialized them with default props.
   */
 
-  console.log(data.datasets![0].data!.length > 0)
-
   return data.datasets![0].data!.length > 0 ? (
-    <Line data={data} width={width} height={height} {...rest} />
+    <Pie data={data} width={width} height={height} {...rest} />
   ) : (
     <CreateSkeletonLoader
       width={width}
       height={height}
-      rects={chartRectSkeleton}
+      skeleton={PieRectSkeleton}
     />
   )
 }
 
-LineChart.defaultProps = {
-  data: { labels: [], datasets: [{ data: [] }] },
-  width: 800,
-  height: 600,
+PieChart.defaultProps = {
+  data: {
+    labels: [],
+    datasets: [{ data: [] }]
+  },
+  width: 640,
+  height: 480,
   options: {}
 }
 
-export { LineChart }
+export { PieChart }

@@ -7,7 +7,7 @@ import Divider from "@material-ui/core/Divider"
 import IconButton from "@material-ui/core/IconButton"
 import SearchBar from "../../components/Search"
 import ReactWebsocket from "../../components/Socket"
-import { LineChart } from "../../components/Charts"
+import { PieChart } from "../../components/Charts"
 import { LogoSmall, LogoMedium, LogoLarge } from "../../assets/images/Logo"
 
 const styles = createStyles({
@@ -69,7 +69,17 @@ class SearchPage extends Component<SearchProps, SearchState> {
 
     this.state = {
       query: this.props.match.params.query,
-      data: { labels: [], datasets: [{ data: [] }] }
+      data: {
+        labels: ["Positive", "Negative", "Neutral"],
+        datasets: [
+          {
+            data: [],
+            backgroundColor: ["#4CAF50", "#f44336", "#9E9E9E"],
+            hoverBackgroundColor: ["#4CAF50", "#f44336", "#9E9E9E"],
+            borderColor: "#fff"
+          }
+        ]
+      }
     }
   }
 
@@ -82,14 +92,29 @@ class SearchPage extends Component<SearchProps, SearchState> {
   }
 
   handleMessage = (message: any) => {
-    const { data } = this.state
+    let datasets = [...this.state.data.datasets!]
+    let currentData = datasets[0].data as number[]
+
+    let polarity = 2
+
+    // 0 is positive sentiment, 1 is negative sentiment and 2 is neutral sentiment
+    if (message["polarity"] > 0.5) {
+      polarity = 0
+    } else if (message["polarity"] < -0.5) {
+      polarity = 1
+    }
+
+    if (currentData.length === 0) {
+      currentData = [0, 0, 0]
+    }
+
+    currentData[polarity] += 1
+    datasets[0].data = currentData
 
     this.setState({
       data: {
-        labels: [...this.state.data.labels!, message["created_at"]],
-        datasets: [
-          { data: [...this.state.data.datasets![0].data!, message["polarity"]] }
-        ]
+        labels: this.state.data.labels,
+        datasets: datasets
       }
     })
   }
@@ -145,35 +170,35 @@ class SearchPage extends Component<SearchProps, SearchState> {
         <Divider />
         <div className={classes.chartContainer}>
           <div className={classes.chart}>
-            <LineChart
+            <PieChart
               data={data}
-              width={800}
-              height={600}
+              width={640}
+              height={480}
               options={{
                 maintainAspectRatio: false,
-                legend: { display: false },
-                elements: { line: { fill: false } },
+                responsive: true,
+                legend: {
+                  display: true,
+                  position: "bottom",
+                  fullWidth: true,
+                  reverse: false
+                },
                 title: {
                   display: true,
                   fontSize: 24,
                   fullWidth: true,
                   text: "Polarity of " + queryParam + " Over Time"
                 },
-                scales: {
-                  yAxes: [
-                    {
-                      ticks: {
-                        beginAtZero: true,
-                        min: -1,
-                        max: 1,
-                        stepSize: 0.1
-                      }
-                    }
-                  ]
+                plugins: {
+                  labels: {
+                    render: "percentage",
+                    fontSize: 24,
+                    fontColor: "white",
+                    precision: 2
+                  }
                 }
               }}
             />
-            )
           </div>
         </div>
         <ReactWebsocket

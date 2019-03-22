@@ -23,22 +23,26 @@ interface LoaderProps {
    */
   speed?: number
   /*
-   * TOptional style definitions. Default to an empty object
+   * Optional style definitions. Defaults to an empty object
    */
   style?: React.CSSProperties
   /*
-   * This property defines the layout of the skeleton loader.
+   * This property defines the layout of the skeleton loader. For each element that you
+   * add, make sure to specify the type i.e {type: "rect", ...} so that it knows what it is
+   * rendering. If you don't, the element wont be rendered and it will move on to the next element.
+   * Of course, you still have to make sure that the properties you give it matches the type you
+   * specified i.e property cx is only for elements of type circle.
    */
-  rects: Array<React.SVGProps<SVGRectElement>>
+  skeleton: Array<React.SVGProps<any>>
 }
 
 const CreateSkeletonLoader: React.FunctionComponent<LoaderProps> = props => {
-  const { rects, ...loaderProps } = props
+  const { skeleton, ...loaderProps } = props
 
   return (
     <ContentLoader {...loaderProps}>
-      {rects.map((rect, id) =>
-        React.createElement("rect", { key: id, ...rect })
+      {skeleton.map(({ type, ...props }, id) =>
+        type ? React.createElement(type, { key: id, ...props }) : null
       )}
     </ContentLoader>
   )
@@ -47,7 +51,7 @@ const CreateSkeletonLoader: React.FunctionComponent<LoaderProps> = props => {
 CreateSkeletonLoader.defaultProps = {
   speed: 2,
   style: {},
-  primaryColor: "#f3f3f3",
+  primaryColor: "#dadada",
   secondaryColor: "#ecebeb"
 }
 
