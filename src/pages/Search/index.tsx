@@ -5,6 +5,7 @@ import createStyles from "@material-ui/core/styles/createStyles"
 import withStyles, { WithStyles } from "@material-ui/core/styles/withStyles"
 import Divider from "@material-ui/core/Divider"
 import IconButton from "@material-ui/core/IconButton"
+import Grid from "@material-ui/core/Grid"
 import SearchBar from "../../components/Search"
 import ReactWebsocket from "../../components/Socket"
 import { PieChart } from "../../components/Charts"
@@ -34,17 +35,13 @@ const styles = createStyles({
     }
   },
   searchBar: {
-    marginTop: 15,
+    marginTop: 8,
     width: "40%"
   },
-  chartContainer: {
-    alignItems: "center",
+  gridContainer: {
     justifyContent: "center",
-    display: "flex"
-  },
-  chart: {
-    marginRight: 50,
-    width: "65%"
+    alignContent: "center",
+    flexGrow: 1
   }
 })
 
@@ -75,8 +72,8 @@ class SearchPage extends Component<SearchProps, SearchState> {
           {
             data: [],
             backgroundColor: ["#4CAF50", "#f44336", "#9E9E9E"],
-            hoverBackgroundColor: ["#4CAF50", "#f44336", "#9E9E9E"],
-            borderColor: "#fff"
+            hoverBackgroundColor: ["#2E7D32", "#C62828", "#616161"],
+            borderColor: "#FFF"
           }
         ]
       }
@@ -98,9 +95,9 @@ class SearchPage extends Component<SearchProps, SearchState> {
     let polarity = 2
 
     // 0 is positive sentiment, 1 is negative sentiment and 2 is neutral sentiment
-    if (message["polarity"] > 0.5) {
+    if (message["polarity"] > 0.05) {
       polarity = 0
-    } else if (message["polarity"] < -0.5) {
+    } else if (message["polarity"] < -0.05) {
       polarity = 1
     }
 
@@ -150,10 +147,15 @@ class SearchPage extends Component<SearchProps, SearchState> {
               src={LogoSmall}
               alt='Logo'
               srcSet={{
-                "1x": LogoSmall,
-                "2x": LogoMedium,
-                "3x": LogoLarge
+                "200w": LogoSmall,
+                "300w": LogoMedium,
+                "578w": LogoLarge
               }}
+              sizes={[
+                { size: "25vw", mediaCondition: "(max-width: 30em)" },
+                { size: "18vw", mediaCondition: "(max-width: 50em)" },
+                { size: "11vw", mediaCondition: "(max-width: 100em)" }
+              ]}
             />
           </IconButton>
           <div className={classes.searchBar}>
@@ -168,8 +170,8 @@ class SearchPage extends Component<SearchProps, SearchState> {
           </div>
         </div>
         <Divider />
-        <div className={classes.chartContainer}>
-          <div className={classes.chart}>
+        <Grid className={classes.gridContainer} container={true} spacing={24}>
+          <Grid item={true} xs={12} sm={6}>
             <PieChart
               data={data}
               width={640}
@@ -199,8 +201,8 @@ class SearchPage extends Component<SearchProps, SearchState> {
                 }
               }}
             />
-          </div>
-        </div>
+          </Grid>
+        </Grid>
         <ReactWebsocket
           url={process.env.REACT_APP_WEBSOCKET_URL}
           onMessage={this.handleMessage}
