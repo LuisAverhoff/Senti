@@ -61,9 +61,9 @@ class HomePage extends Component<HomeProps, HomeState> {
               "578w": LogoLarge
             }}
             sizes={[
-              { size: "50vw", mediaCondition: "(max-width: 30em)" },
-              { size: "30vw", mediaCondition: "(max-width: 50em)" },
-              { size: "18vw", mediaCondition: "(max-width: 100em)" }
+              { size: "40vw", mediaCondition: "(max-width: 30em)" },
+              { size: "28vw", mediaCondition: "(max-width: 50em)" },
+              { size: "18vw" }
             ]}
           />
         </div>

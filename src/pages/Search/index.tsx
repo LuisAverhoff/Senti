@@ -153,9 +153,9 @@ class SearchPage extends Component<SearchProps, SearchState> {
                 "578w": LogoLarge
               }}
               sizes={[
-                { size: "25vw", mediaCondition: "(max-width: 30em)" },
-                { size: "18vw", mediaCondition: "(max-width: 50em)" },
-                { size: "11vw", mediaCondition: "(max-width: 100em)" }
+                { size: "20vw", mediaCondition: "(max-width: 30em)" },
+                { size: "15vw", mediaCondition: "(max-width: 50em)" },
+                { size: "10vw" }
               ]}
             />
           </IconButton>
