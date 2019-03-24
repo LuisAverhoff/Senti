@@ -89,30 +89,30 @@ class SearchPage extends Component<SearchProps, SearchState> {
   }
 
   handleMessage = (message: any) => {
-    // Make a shallow copy of our data so that we directly mutate it. React doesn't like that.
-    let datasets = [...this.state.piedata.datasets!]
-    let currentData = datasets[0].data as number[]
-
     let polarity = 2
-
     // 0 is positive sentiment, 1 is negative sentiment and 2 is neutral sentiment
     if (message["polarity"] > 0.05) {
       polarity = 0
     } else if (message["polarity"] < -0.05) {
       polarity = 1
     }
-
-    if (currentData.length === 0) {
-      currentData = [0, 0, 0]
-    }
-
-    currentData[polarity] += 1
-    datasets[0].data = currentData
-
-    this.setState({
-      piedata: {
-        labels: this.state.piedata.labels,
-        datasets: datasets
+    this.setState(state => {
+      const data =
+        state.piedata.datasets![0].data!.length === 0
+          ? [0, 0, 0]
+          : (state.piedata.datasets![0].data!.slice() as number[])
+      // Numbers are immutable objects, so you can just clone the array and replace the element.
+      data[polarity] = data[polarity] + 1
+      return {
+        piedata: {
+          ...state.piedata,
+          datasets: [
+            {
+              ...state.piedata.datasets![0],
+              data
+            }
+          ]
+        }
       }
     })
   }
