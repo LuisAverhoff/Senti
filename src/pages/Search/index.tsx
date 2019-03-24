@@ -51,7 +51,7 @@ interface RouterProps {
 
 interface SearchState {
   query: string
-  data: Chart.ChartData
+  piedata: Chart.ChartData
 }
 
 interface SearchProps
@@ -66,7 +66,7 @@ class SearchPage extends Component<SearchProps, SearchState> {
 
     this.state = {
       query: this.props.match.params.query,
-      data: {
+      piedata: {
         labels: ["Positive", "Negative", "Neutral"],
         datasets: [
           {
@@ -89,7 +89,8 @@ class SearchPage extends Component<SearchProps, SearchState> {
   }
 
   handleMessage = (message: any) => {
-    let datasets = [...this.state.data.datasets!]
+    // Make a shallow copy of our data so that we directly mutate it. React doesn't like that.
+    let datasets = [...this.state.piedata.datasets!]
     let currentData = datasets[0].data as number[]
 
     let polarity = 2
@@ -109,8 +110,8 @@ class SearchPage extends Component<SearchProps, SearchState> {
     datasets[0].data = currentData
 
     this.setState({
-      data: {
-        labels: this.state.data.labels,
+      piedata: {
+        labels: this.state.piedata.labels,
         datasets: datasets
       }
     })
@@ -132,7 +133,7 @@ class SearchPage extends Component<SearchProps, SearchState> {
 
   render() {
     const { classes } = this.props
-    const { query, data } = this.state
+    const { query, piedata } = this.state
     const queryParam = this.props.match.params.query
 
     return (
@@ -173,7 +174,7 @@ class SearchPage extends Component<SearchProps, SearchState> {
         <Grid className={classes.gridContainer} container={true} spacing={24}>
           <Grid item={true} xs={12} sm={6}>
             <PieChart
-              data={data}
+              data={piedata}
               width={640}
               height={480}
               options={{
