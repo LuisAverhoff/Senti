@@ -1,5 +1,7 @@
 # Senti
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/c437dce4-1904-4031-b8ec-4a83ef1b9782/deploy-status)](https://app.netlify.com/sites/senti/deploys)
+
 This application allows users to make queries on a specific person or product and see if there is a positive or negative trend assoicated with this person or product.
 Main depenencies for this application are:
 
