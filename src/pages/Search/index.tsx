@@ -117,11 +117,35 @@ class SearchPage extends Component<SearchProps, SearchState> {
     })
   }
 
+  resetChart = () => {
+    const { piedata } = this.state
+
+    if (piedata.datasets![0].data!.length === 0) {
+      return
+    }
+
+    this.setState(state => {
+      return {
+        piedata: {
+          ...state.piedata,
+          datasets: [
+            {
+              ...state.piedata.datasets![0],
+              data: []
+            }
+          ]
+        }
+      }
+    })
+  }
+
   HandleSearchRequest(query: string) {
     if (query) {
       if (this.webSocketRef.current) {
         this.webSocketRef.current.sendMessage({ track: query })
       }
+
+      this.resetChart()
 
       this.props.history.push(`/search/${query}`)
     }
