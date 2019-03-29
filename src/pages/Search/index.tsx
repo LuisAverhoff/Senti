@@ -1,5 +1,6 @@
 import React, { Component } from "react"
 import Image from "react-simple-image"
+import { ChartData } from "chart.js"
 import { RouteComponentProps } from "react-router"
 import createStyles from "@material-ui/core/styles/createStyles"
 import withStyles, { WithStyles } from "@material-ui/core/styles/withStyles"
@@ -8,8 +9,9 @@ import IconButton from "@material-ui/core/IconButton"
 import Grid from "@material-ui/core/Grid"
 import SearchBar from "../../components/Search"
 import ReactWebsocket from "../../components/Socket"
-import { PieChart } from "../../components/Charts"
+import { Chart } from "../../components/Chart"
 import { LogoSmall, LogoMedium, LogoLarge } from "../../assets/images/Logo"
+import { PieChartSkeleton, BarChartSkeleton } from "../../util"
 
 const styles = createStyles({
   container: {
@@ -38,7 +40,7 @@ const styles = createStyles({
     marginTop: 8,
     width: "40%"
   },
-  gridContainer: {
+  chartContainer: {
     justifyContent: "center",
     alignContent: "center",
     flexGrow: 1
@@ -51,7 +53,8 @@ interface RouterProps {
 
 interface SearchState {
   query: string
-  piedata: Chart.ChartData
+  piedata: ChartData
+  bardata: ChartData
 }
 
 interface SearchProps
@@ -76,6 +79,10 @@ class SearchPage extends Component<SearchProps, SearchState> {
             borderColor: "#FFF"
           }
         ]
+      },
+      bardata: {
+        labels: [],
+        datasets: [{ data: [] }]
       }
     }
   }
@@ -117,13 +124,7 @@ class SearchPage extends Component<SearchProps, SearchState> {
     })
   }
 
-  resetChart = () => {
-    const { piedata } = this.state
-
-    if (piedata.datasets![0].data!.length === 0) {
-      return
-    }
-
+  resetCharts = () => {
     this.setState(state => {
       return {
         piedata: {
@@ -131,6 +132,15 @@ class SearchPage extends Component<SearchProps, SearchState> {
           datasets: [
             {
               ...state.piedata.datasets![0],
+              data: []
+            }
+          ]
+        },
+        bardata: {
+          ...state.bardata,
+          datasets: [
+            {
+              ...state.bardata.datasets![0],
               data: []
             }
           ]
@@ -145,7 +155,7 @@ class SearchPage extends Component<SearchProps, SearchState> {
         this.webSocketRef.current.sendMessage({ track: query })
       }
 
-      this.resetChart()
+      this.resetCharts()
 
       this.props.history.push(`/search/${query}`)
     }
@@ -157,7 +167,7 @@ class SearchPage extends Component<SearchProps, SearchState> {
 
   render() {
     const { classes } = this.props
-    const { query, piedata } = this.state
+    const { query, piedata, bardata } = this.state
     const queryParam = this.props.match.params.query
 
     return (
@@ -195,14 +205,15 @@ class SearchPage extends Component<SearchProps, SearchState> {
           </div>
         </div>
         <Divider />
-        <Grid className={classes.gridContainer} container={true} spacing={24}>
+        <Grid className={classes.chartContainer} container={true} spacing={24}>
           <Grid item={true} xs={12} sm={6}>
-            <PieChart
+            <Chart
               data={piedata}
-              width={640}
-              height={480}
+              type='pie'
+              skeleton={PieChartSkeleton}
+              width={800}
+              height={600}
               options={{
-                maintainAspectRatio: false,
                 responsive: true,
                 legend: {
                   display: true,
@@ -214,7 +225,7 @@ class SearchPage extends Component<SearchProps, SearchState> {
                   display: true,
                   fontSize: 24,
                   fullWidth: true,
-                  text: "Polarity of " + queryParam + " Over Time"
+                  text: "Polarity of " + queryParam
                 },
                 plugins: {
                   labels: {
@@ -223,6 +234,31 @@ class SearchPage extends Component<SearchProps, SearchState> {
                     fontColor: "white",
                     precision: 2
                   }
+                }
+              }}
+            />
+          </Grid>
+          <Grid item={true} xs={12} sm={6}>
+            <Chart
+              data={bardata}
+              type='bar'
+              skeleton={BarChartSkeleton}
+              width={800}
+              height={600}
+              options={{
+                responsive: true,
+                legend: {
+                  display: false
+                },
+                title: {
+                  display: true,
+                  fontSize: 24,
+                  fullWidth: true,
+                  text:
+                    "Top 10 Words that People are saying about " + queryParam
+                },
+                plugins: {
+                  labels: false
                 }
               }}
             />

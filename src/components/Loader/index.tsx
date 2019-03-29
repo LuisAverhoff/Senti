@@ -5,11 +5,11 @@ interface LoaderProps {
   /*
    * The height of the skeleton loader. This will be set in the viewbox attr.
    */
-  height: number
+  height: number | undefined
   /*
    * The width of the skeleton loader. This will be set in the viewbox attr.
    */
-  width: number
+  width: number | undefined
   /*
    * Background color that is used when loader is animated.
    */
@@ -49,10 +49,12 @@ const CreateSkeletonLoader: React.FunctionComponent<LoaderProps> = props => {
 }
 
 CreateSkeletonLoader.defaultProps = {
+  width: 640,
+  height: 480,
   speed: 2,
   style: {},
   primaryColor: "#dadada",
   secondaryColor: "#ecebeb"
 }
 
-export { CreateSkeletonLoader }
+export default CreateSkeletonLoader

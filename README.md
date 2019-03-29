@@ -9,6 +9,8 @@ Main depenencies for this application are:
 - **Websockets** - to allow continuous streaming of data in real time
 - **React-Charts 2.js** for data visualization.
 
+Here is a live demo for you to try out the application. [Demo](https://senti.netlify.com)
+
 # Read Before Starting
 
 Before running this project, make sure that you have your senti server up and running. Once you have done that, make sure that in your `.env` file you initialize `REACT_APP_WEBSOCKET_URL` with the url that your senti server is running on.
