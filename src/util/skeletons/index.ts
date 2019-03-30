@@ -20,39 +20,39 @@ export const BarChartSkeleton = (width: number, height: number) => {
   const skeleton: Array<SVGProps<any>> = [
     {
       type: "rect",
-      x: "0",
-      y: "18",
-      rx: "5",
-      ry: "5",
-      width: width - 30,
-      height: "40"
+      x: 0,
+      y: 0,
+      rx: 5,
+      ry: 5,
+      width: width - 50,
+      height: 40
     },
     {
       type: "rect",
-      x: "0",
-      y: "68",
-      rx: "5",
-      ry: "5",
-      width: "40",
-      height: height - 130
+      x: 0,
+      y: 55,
+      rx: 5,
+      ry: 5,
+      width: 40,
+      height: height - 110
     },
     {
       type: "rect",
-      x: "50",
-      y: "68",
-      rx: "5",
-      ry: "5",
-      width: width - 80,
-      height: height - 130
+      x: 50,
+      y: 55,
+      rx: 5,
+      ry: 5,
+      width: width - 100,
+      height: height - 110
     },
     {
       type: "rect",
-      x: "0",
-      y: height - 50,
-      rx: "5",
-      ry: "5",
-      width: width - 30,
-      height: "40"
+      x: 0,
+      y: height - 40,
+      rx: 5,
+      ry: 5,
+      width: width - 50,
+      height: 40
     }
   ]
 

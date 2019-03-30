@@ -11,7 +11,19 @@ import SearchBar from "../../components/Search"
 import ReactWebsocket from "../../components/Socket"
 import { Chart } from "../../components/Chart"
 import { LogoSmall, LogoMedium, LogoLarge } from "../../assets/images/Logo"
-import { PieChartSkeleton, BarChartSkeleton } from "../../util"
+import { PieChartSkeleton, BarChartSkeleton } from "../../util/skeletons"
+import MaxHeap from "../../util/maxheap"
+
+export enum Spiral {
+  Archimedean = "archimedean",
+  Rectangular = "rectangular"
+}
+
+export enum Scale {
+  Linear = "linear",
+  Log = "log",
+  Sqrt = "sqrt"
+}
 
 const styles = createStyles({
   container: {
@@ -63,6 +75,7 @@ interface SearchProps
 
 class SearchPage extends Component<SearchProps, SearchState> {
   private webSocketRef = React.createRef<ReactWebsocket>()
+  private hashtags: HashTagFreq = {}
 
   constructor(props: SearchPage["props"]) {
     super(props)
@@ -74,7 +87,7 @@ class SearchPage extends Component<SearchProps, SearchState> {
         datasets: [
           {
             data: [],
-            backgroundColor: ["#4CAF50", "#f44336", "#9E9E9E"],
+            backgroundColor: ["#4CAF50", "#F44336", "#9E9E9E"],
             hoverBackgroundColor: ["#2E7D32", "#C62828", "#616161"],
             borderColor: "#FFF"
           }
@@ -82,7 +95,25 @@ class SearchPage extends Component<SearchProps, SearchState> {
       },
       bardata: {
         labels: [],
-        datasets: [{ data: [] }]
+        datasets: [
+          {
+            data: [],
+            backgroundColor: [
+              "#2962FF",
+              "#FFEE58",
+              "#FF7043",
+              "#7E57C2",
+              "#F44336"
+            ],
+            hoverBackgroundColor: [
+              "#01579B",
+              "#F9A825",
+              "#BF360C",
+              "#4527A0",
+              "#B71C1C"
+            ]
+          }
+        ]
       }
     }
   }
@@ -96,26 +127,65 @@ class SearchPage extends Component<SearchProps, SearchState> {
   }
 
   handleMessage = (message: any) => {
-    let polarity = 2
-    // 0 is positive sentiment, 1 is negative sentiment and 2 is neutral sentiment
-    if (message["polarity"] > 0.05) {
-      polarity = 0
-    } else if (message["polarity"] < -0.05) {
-      polarity = 1
-    }
+    this.updatePieChart(message)
+    this.updateBarChart(message)
+  }
+
+  updatePieChart = (message: any) => {
+    let polarity = message.polarityIndex
+
     this.setState(state => {
       const data =
         state.piedata.datasets![0].data!.length === 0
           ? [0, 0, 0]
           : (state.piedata.datasets![0].data!.slice() as number[])
       // Numbers are immutable objects, so you can just clone the array and replace the element.
-      data[polarity] = data[polarity] + 1
+      data[polarity] += 1
+
       return {
         piedata: {
           ...state.piedata,
           datasets: [
             {
               ...state.piedata.datasets![0],
+              data
+            }
+          ]
+        }
+      }
+    })
+  }
+
+  updateBarChart(message: any) {
+    if (Object.keys(message.hashtags).length == 0) {
+      return
+    }
+
+    Object.keys(message.hashtags).forEach(item => {
+      if (item in this.hashtags) {
+        this.hashtags[item] += message.hashtags[item]
+      } else {
+        this.hashtags[item] = message.hashtags[item]
+      }
+    })
+
+    let labels = Object.keys(this.hashtags)
+    let data = Object.values(this.hashtags)
+
+    if (labels.length > 5) {
+      const topFiveHashTags = this.getKLargestHashtags(5, this.hashtags)
+      labels = Object.keys(topFiveHashTags)
+      data = Object.values(topFiveHashTags)
+    }
+
+    this.setState(state => {
+      return {
+        bardata: {
+          ...state.bardata,
+          labels,
+          datasets: [
+            {
+              ...state.bardata.datasets![0],
               data
             }
           ]
@@ -138,6 +208,7 @@ class SearchPage extends Component<SearchProps, SearchState> {
         },
         bardata: {
           ...state.bardata,
+          labels: [],
           datasets: [
             {
               ...state.bardata.datasets![0],
@@ -159,6 +230,26 @@ class SearchPage extends Component<SearchProps, SearchState> {
 
       this.props.history.push(`/search/${query}`)
     }
+  }
+
+  getKLargestHashtags = (k: number, hashtags: HashTagFreq) => {
+    const heap = new MaxHeap()
+
+    Object.keys(hashtags).forEach(item => {
+      heap.insert(item, hashtags[item])
+    })
+
+    const topFiveHashTags: HashTagFreq = {}
+
+    let index = 0
+
+    while (index < k) {
+      const node = heap.extractMax()
+      topFiveHashTags[node!.key] = node!.value
+      index++
+    }
+
+    return topFiveHashTags
   }
 
   returnToHomePage() {
@@ -205,7 +296,7 @@ class SearchPage extends Component<SearchProps, SearchState> {
           </div>
         </div>
         <Divider />
-        <Grid className={classes.chartContainer} container={true} spacing={24}>
+        <Grid className={classes.chartContainer} container={true} spacing={0}>
           <Grid item={true} xs={12} sm={6}>
             <Chart
               data={piedata}
@@ -232,7 +323,7 @@ class SearchPage extends Component<SearchProps, SearchState> {
                     render: "percentage",
                     fontSize: 24,
                     fontColor: "white",
-                    precision: 2
+                    precision: 0
                   }
                 }
               }}
@@ -255,7 +346,22 @@ class SearchPage extends Component<SearchProps, SearchState> {
                   fontSize: 24,
                   fullWidth: true,
                   text:
-                    "Top 10 Words that People are saying about " + queryParam
+                    "Top 5 Hashtags People Associate with the the Word " +
+                    queryParam
+                },
+                scales: {
+                  yAxes: [
+                    {
+                      ticks: {
+                        beginAtZero: true,
+                        callback: function(value) {
+                          if (value % 1 === 0) {
+                            return value
+                          }
+                        }
+                      }
+                    }
+                  ]
                 },
                 plugins: {
                   labels: false
