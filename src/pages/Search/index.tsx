@@ -2,6 +2,7 @@ import React, { Component } from "react"
 import Image from "react-simple-image"
 import { ChartData } from "chart.js"
 import { RouteComponentProps } from "react-router"
+import { Link } from "react-router-dom"
 import createStyles from "@material-ui/core/styles/createStyles"
 import withStyles, { WithStyles } from "@material-ui/core/styles/withStyles"
 import Divider from "@material-ui/core/Divider"
@@ -184,6 +185,8 @@ class SearchPage extends Component<SearchProps, SearchState> {
   }
 
   resetCharts = () => {
+    this.hashtags = {}
+
     this.setState(state => {
       return {
         piedata: {
@@ -241,10 +244,6 @@ class SearchPage extends Component<SearchProps, SearchState> {
     return topFiveHashTags
   }
 
-  returnToHomePage() {
-    this.props.history.push("/")
-  }
-
   render() {
     const { classes } = this.props
     const { query, piedata, bardata } = this.state
@@ -253,26 +252,24 @@ class SearchPage extends Component<SearchProps, SearchState> {
     return (
       <div className={classes.container}>
         <div className={classes.header}>
-          <IconButton
-            disableRipple={true}
-            className={classes.logo}
-            onClick={() => this.returnToHomePage()}
-          >
-            <Image
-              src={LogoSmall}
-              alt='Logo'
-              srcSet={{
-                "200w": LogoSmall,
-                "300w": LogoMedium,
-                "578w": LogoLarge
-              }}
-              sizes={[
-                { size: "20vw", mediaCondition: "(max-width: 30em)" },
-                { size: "15vw", mediaCondition: "(max-width: 50em)" },
-                { size: "10vw" }
-              ]}
-            />
-          </IconButton>
+          <Link to='/'>
+            <IconButton disableRipple={true} className={classes.logo}>
+              <Image
+                src={LogoSmall}
+                alt='Logo'
+                srcSet={{
+                  "200w": LogoSmall,
+                  "300w": LogoMedium,
+                  "578w": LogoLarge
+                }}
+                sizes={[
+                  { size: "20vw", mediaCondition: "(max-width: 30em)" },
+                  { size: "15vw", mediaCondition: "(max-width: 50em)" },
+                  { size: "10vw" }
+                ]}
+              />
+            </IconButton>
+          </Link>
           <div className={classes.searchBar}>
             <SearchBar
               value={query}
