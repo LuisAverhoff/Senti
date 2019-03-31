@@ -14,17 +14,6 @@ import { LogoSmall, LogoMedium, LogoLarge } from "../../assets/images/Logo"
 import { PieChartSkeleton, BarChartSkeleton } from "../../util/skeletons"
 import MaxHeap from "../../util/maxheap"
 
-export enum Spiral {
-  Archimedean = "archimedean",
-  Rectangular = "rectangular"
-}
-
-export enum Scale {
-  Linear = "linear",
-  Log = "log",
-  Sqrt = "sqrt"
-}
-
 const styles = createStyles({
   container: {
     height: "100vh",
