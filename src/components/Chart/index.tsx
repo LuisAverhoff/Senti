@@ -4,10 +4,26 @@ import ChartComponent, { ChartComponentProps } from "react-chartjs-2"
 import CreateSkeletonLoader from "../Loader"
 
 interface ChartProps extends ChartComponentProps {
+  /*
+   * The data that react chart js 2 will use to render the chart
+   */
   data: ChartData
+  /*
+   * The width of the chart
+   */
   width: number
+  /*
+   * The height of the chart
+   */
   height: number
+  /*
+   * A function that, given a width and a height, will produce a simplified layout that will
+   * be used a loader until there is data to display.
+   */
   skeleton(width: number, height: number): Array<SVGProps<any>>
+  /*
+   * Optional style definitions to customize the loader.
+   */
   skeletonStyle?: React.CSSProperties
 }
 
