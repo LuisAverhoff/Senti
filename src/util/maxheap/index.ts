@@ -3,15 +3,30 @@ interface HeapNode {
   value: number
 }
 
-export interface MaxHeapProps {
+interface HeapProps {
+  /*
+   * Insert the heap node at the end of the array and sift the node up if needed.
+   */
   insert(k: string, v: number): void
+  /*
+   * Gets the max node at index 0.
+   */
   max(): HeapNode | null
+  /*
+   * Returns the max node at index 0 and rebuildsthe heap.
+   */
   extractMax(): HeapNode | null
+  /*
+   * Gets the number of nodes in the heap.
+   */
   size(): number
+  /*
+   * sets the heap back  to an empty heap.
+   */
   clear(): void
 }
 
-class MaxHeap implements MaxHeapProps {
+class MaxHeap implements HeapProps {
   private heap: Array<HeapNode> = []
   private heapSize = 0
 
