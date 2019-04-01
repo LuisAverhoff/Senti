@@ -22,3 +22,6 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# vscode folder with specific user configurations such as the path to the python interpreter in the virtual environment.
+.vscode/*
