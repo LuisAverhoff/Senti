@@ -1,9 +1,13 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import App from '../App'
+import React from "react"
+import Enzyme, { shallow, mount } from "enzyme"
+import App from "../App"
+import Adapter from "enzyme-adapter-react-16"
 
-it('renders without crashing', () => {
-  const div = document.createElement('div')
-  ReactDOM.render(<App />, div)
-  ReactDOM.unmountComponentAtNode(div)
+Enzyme.configure({ adapter: new Adapter() })
+
+describe("Unit Test Suite for App Component", () => {
+  it("renders without crashing", () => {
+    const AppComponent = shallow(<App />)
+    expect(AppComponent.exists()).toBe(true)
+  })
 })
