@@ -6,7 +6,7 @@ describe("Unit Test Suite for <SearchBar /> Component", () => {
   const shallow = createShallow({ dive: true })
   const emptyMockFunction = jest.fn((_value: string) => {})
 
-  it("renders without crashing", () => {
+  it("renders search bar without crashing", () => {
     const wrapper = shallow(
       <SearchBar
         value=''
@@ -38,7 +38,7 @@ describe("Unit Test Suite for <SearchBar /> Component", () => {
     expect(onChangeMock.mock.calls[0][0]).toEqual("Test")
   })
 
-  it("Search functions gets called when user presses enter", () => {
+  it("Search function gets called when user presses enter", () => {
     const onRequestSearchMock = jest.fn((_value: string) => {
       console.log("onRequestSearch was called.")
     })
@@ -56,7 +56,7 @@ describe("Unit Test Suite for <SearchBar /> Component", () => {
     expect(onRequestSearchMock).toHaveBeenCalled()
   })
 
-  it("Search functions gets called when user clicks the search icon button", () => {
+  it("Search function gets called when user clicks the search icon button", () => {
     const onRequestSearchMock = jest.fn((_value: string) => {
       console.log("onRequestSearch was called.")
     })

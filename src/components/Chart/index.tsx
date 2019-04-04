@@ -56,4 +56,4 @@ Chart.defaultProps = {
   options: {}
 }
 
-export { Chart }
+export default Chart
