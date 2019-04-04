@@ -1,16 +1,92 @@
 import React from "react"
-import Enzyme, { shallow, mount } from "enzyme"
+import { createShallow } from "@material-ui/core/test-utils"
 import SearchBar from "../Search"
-import Adapter from "enzyme-adapter-react-16"
 
-Enzyme.configure({ adapter: new Adapter() })
+describe("Unit Test Suite for <SearchBar /> Component", () => {
+  const shallow = createShallow({ dive: true })
+  const emptyMockFunction = jest.fn((_value: string) => {})
 
-describe("Unit Test Suite for SearchBar Component", () => {
   it("renders without crashing", () => {
-    const query = ""
-    const SearchBarComponent = shallow(
-      <SearchBar value={query} onChange={() => {}} onRequestSearch={() => {}} />
+    const wrapper = shallow(
+      <SearchBar
+        value=''
+        onChange={emptyMockFunction}
+        onRequestSearch={emptyMockFunction}
+      />
     )
-    expect(SearchBarComponent.exists()).toBe(true)
+
+    expect(wrapper.exists()).toBe(true)
+  })
+
+  it("query entered by user matches input.", () => {
+    const onChangeMock = jest.fn((_value: string) => {
+      console.log("onChange was called.")
+    })
+
+    const wrapper = shallow(
+      <SearchBar
+        value=''
+        onChange={onChangeMock}
+        onRequestSearch={emptyMockFunction}
+      />
+    )
+
+    wrapper
+      .find("WithStyles(Input)")
+      .simulate("change", { target: { value: "Test" } })
+
+    expect(onChangeMock.mock.calls[0][0]).toEqual("Test")
+  })
+
+  it("Search functions gets called when user presses enter", () => {
+    const onRequestSearchMock = jest.fn((_value: string) => {
+      console.log("onRequestSearch was called.")
+    })
+
+    const wrapper = shallow(
+      <SearchBar
+        value=''
+        onChange={emptyMockFunction}
+        onRequestSearch={onRequestSearchMock}
+      />
+    )
+
+    wrapper.find("WithStyles(Input)").simulate("keyup", { key: "Enter" })
+
+    expect(onRequestSearchMock).toHaveBeenCalled()
+  })
+
+  it("Search functions gets called when user clicks the search icon button", () => {
+    const onRequestSearchMock = jest.fn((_value: string) => {
+      console.log("onRequestSearch was called.")
+    })
+
+    const wrapper = shallow(
+      <SearchBar
+        value=''
+        onChange={emptyMockFunction}
+        onRequestSearch={onRequestSearchMock}
+      />
+    )
+
+    wrapper.find("#searchIconButton").simulate("click")
+
+    expect(onRequestSearchMock).toHaveBeenCalled()
+  })
+
+  it("Clean input of trailing spaces if empty", () => {
+    const wrapper = shallow(
+      <SearchBar
+        value=''
+        onChange={emptyMockFunction}
+        onRequestSearch={emptyMockFunction}
+      />
+    )
+
+    const input = wrapper.find("WithStyles(Input)")
+    input.simulate("change", { target: { value: "    " } })
+    input.simulate("blur")
+
+    expect(input.props().value).toEqual("")
   })
 })

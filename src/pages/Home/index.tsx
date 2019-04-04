@@ -39,7 +39,7 @@ class HomePage extends Component<HomeProps, HomeState> {
     query: ""
   }
 
-  HandleSearchRequest(query: string) {
+  HandleSearchRequest = (query: string) => {
     if (query) {
       this.props.history.push(`/search/${query}`)
     }

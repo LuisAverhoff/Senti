@@ -25,17 +25,8 @@ const styles = createStyles({
     transform: "scale(1, 1)",
     transition: "transform 200ms cubic-bezier(0.4, 0.0, 0.2, 1)"
   },
-  iconButtonHidden: {
-    transform: "scale(0, 0)",
-    "& > $icon": {
-      opacity: 0
-    }
-  },
   iconButtonDisabled: {
     opacity: 0.38
-  },
-  searchIconButton: {
-    marginRight: -48
   },
   icon: {
     transition: "opacity 200ms cubic-bezier(0.4, 0.0, 0.2, 1)"
@@ -51,31 +42,20 @@ const styles = createStyles({
 
 interface SearchBarProps extends WithStyles<typeof styles> {
   /*
-   * whether to clear search on escape.
-   */
-  cancelOnEscape?: boolean
-  /*
    * Name of the custom top-level class.
    */
   className?: string
-  /*
-   * Override the default look of the close icon button.
-   */
-  closeIcon: JSX.Element
   /*
    * Disables the search bar.
    */
   disabled?: boolean
   /*
-   * Callback when the user clicks on the close icon button.
-   */
-  onCancelSearch?(): void
-  /*
    * Callback when the value changes.
    */
   onChange(value: string): void
   /*
-   * Callback when the search icon is clicked or when the search bar has focus and the user presses enter.
+   * Callback when the search icon is clicked or when the search bar has focus and the user
+   * presses enter.
    */
   onRequestSearch(query: string): void
   /*
@@ -103,7 +83,6 @@ interface SearchBarState {
 class SearchBar extends Component<SearchBarProps, SearchBarState> {
   static defaultProps = {
     className: "",
-    closeIcon: <ClearIcon style={{ color: "#4483D9" }} />,
     disabled: false,
     placeholder: "search",
     searchIcon: <SearchIcon style={{ color: "#4483D9" }} />,
@@ -118,7 +97,7 @@ class SearchBar extends Component<SearchBarProps, SearchBarState> {
     }
   }
 
-  handleOnBlur = (_e: React.FocusEvent<HTMLDivElement>) => {
+  handleOnInputBlur = (_e: React.FocusEvent<HTMLDivElement>) => {
     if (this.state.value.trim().length === 0) {
       this.setState({ value: "" })
     }
@@ -134,24 +113,11 @@ class SearchBar extends Component<SearchBarProps, SearchBarState> {
     }
   }
 
-  handleCancelSearch = () => {
-    this.setState({ value: "" })
-
-    if (this.props.onCancelSearch) {
-      this.props.onCancelSearch()
-    }
-  }
-
   handleKeyUp = (
     e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     if (e.charCode === 13 || e.key === "Enter") {
       this.handleSearchRequest()
-    } else if (
-      this.props.cancelOnEscape &&
-      (e.charCode === 27 || e.key === "Escape")
-    ) {
-      this.handleCancelSearch()
     }
   }
 
@@ -167,8 +133,6 @@ class SearchBar extends Component<SearchBarProps, SearchBarState> {
       className,
       classes,
       disabled,
-      closeIcon,
-      onCancelSearch,
       onRequestSearch,
       searchIcon,
       style,
@@ -180,7 +144,7 @@ class SearchBar extends Component<SearchBarProps, SearchBarState> {
         <div className={classes.searchContainer}>
           <Input
             {...inputProps}
-            onBlur={this.handleOnBlur}
+            onBlur={this.handleOnInputBlur}
             value={value}
             onChange={this.handleOnChange}
             onKeyUp={this.handleKeyUp}
@@ -191,28 +155,15 @@ class SearchBar extends Component<SearchBarProps, SearchBarState> {
           />
         </div>
         <IconButton
+          id='searchIconButton'
           onClick={this.handleSearchRequest}
           classes={{
-            root: classNames(classes.iconButton, classes.searchIconButton, {
-              [classes.iconButtonHidden]: value !== ""
-            }),
+            root: classNames(classes.iconButton),
             disabled: classes.iconButtonDisabled
           }}
           disabled={disabled}
         >
           {React.cloneElement(searchIcon, { classes: { root: classes.icon } })}
-        </IconButton>
-        <IconButton
-          onClick={this.handleCancelSearch}
-          classes={{
-            root: classNames(classes.iconButton, {
-              [classes.iconButtonHidden]: value === ""
-            }),
-            disabled: classes.iconButtonDisabled
-          }}
-          disabled={disabled}
-        >
-          {React.cloneElement(closeIcon, { classes: { root: classes.icon } })}
         </IconButton>
       </Paper>
     )
