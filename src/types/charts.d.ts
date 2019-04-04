@@ -1,3 +1,3 @@
-interface HashTagFreq {
+interface HashtagFreqDict {
   [key: string]: number
 }

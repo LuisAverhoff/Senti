@@ -65,7 +65,7 @@ interface SearchProps
 
 class SearchPage extends Component<SearchProps, SearchState> {
   private webSocketRef = React.createRef<ReactWebsocket>()
-  private hashtags: HashTagFreq = {}
+  private hashtags: HashtagFreqDict = {}
 
   constructor(props: SearchPage["props"]) {
     super(props)
@@ -224,20 +224,22 @@ class SearchPage extends Component<SearchProps, SearchState> {
     }
   }
 
-  getKLargestHashtags = (k: number, hashtags: HashTagFreq) => {
+  getKLargestHashtags = (k: number, hashtags: HashtagFreqDict) => {
     const heap = new MaxHeap()
 
     Object.keys(hashtags).forEach(item => {
-      heap.insert(item, hashtags[item])
+      heap.insert(hashtags[item], item as String)
     })
 
-    const topFiveHashTags: HashTagFreq = {}
+    const topFiveHashTags: HashtagFreqDict = {}
 
     let index = 0
 
     while (index < k) {
       const node = heap.extractMax()
-      topFiveHashTags[node!.key] = node!.value
+      const hashtag = String(node!.value)
+      const frequency = node!.key as number
+      topFiveHashTags[hashtag] = frequency
       index++
     }
 

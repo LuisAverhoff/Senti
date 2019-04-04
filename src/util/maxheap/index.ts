@@ -1,13 +1,13 @@
 interface HeapNode {
-  key: string
-  value: number
+  key: number | string
+  value: object
 }
 
 interface HeapProps {
   /*
    * Insert the heap node at the end of the array and sift the node up if needed.
    */
-  insert(k: string, v: number): void
+  insert(k: number | string, v: object): void
   /*
    * Gets the max node at index 0.
    */
@@ -86,7 +86,7 @@ class MaxHeap implements HeapProps {
     }
   }
 
-  insert = (k: string, v: number) => {
+  insert = (k: number | string, v: object) => {
     const node: HeapNode = { key: k, value: v }
     this.heap.push(node)
     this.heapSize += 1
