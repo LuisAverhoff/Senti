@@ -30,7 +30,7 @@ You will also see any lint errors in the console.
 
 ### `yarn test`
 
-Launches the test runner in the interactive watch mode. You can also run `yarn test:watch` to run everytime there is a change in the test and/or component file.<br>
+Launches the test runner in the interactive watch mode. You can also run `yarn test:watch` to run everytime there is a change in the test and/or component file or `yarn test:coverage` to show the percentage of code that have been covered by the tests.<br>
 
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 

@@ -8,6 +8,6 @@ cache:
 install:
   - yarn install
 script:
-  - yarn test
+  - yarn test:coverage
 after_success:
-  - yarn coverage
+  - yarn codecov
