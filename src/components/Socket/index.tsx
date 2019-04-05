@@ -69,14 +69,14 @@ class ReactWebsocket extends Component<
   }
 
   componentDidMount() {
-    this._addListeners()
+    this.addListeners()
   }
 
   componentWillUnmount() {
     const { ws } = this.state
 
-    this._clearTimer()
-    this._removeListeners()
+    this.clearTimer()
+    this.removeListeners()
     ws.close()
   }
 
@@ -87,40 +87,40 @@ class ReactWebsocket extends Component<
     return false
   }
 
-  _addListeners = () => {
+  private addListeners = () => {
     const { ws } = this.state
 
     if (!ws) {
       return
     }
 
-    this._debugLine("Adding event listeners")
+    this.debugLine("Adding event listeners")
 
-    ws.addEventListener("open", this._handleOpen)
-    ws.addEventListener("error", this._handleError)
-    ws.addEventListener("message", this._handleMessage)
-    ws.addEventListener("close", this._handleClose)
+    ws.addEventListener("open", this.handleOpen)
+    ws.addEventListener("error", this.handleError)
+    ws.addEventListener("message", this.handleMessage)
+    ws.addEventListener("close", this.handleClose)
   }
 
-  _removeListeners = () => {
+  private removeListeners = () => {
     const { ws } = this.state
 
     if (!ws) {
       return
     }
 
-    this._debugLine("removing event listeners")
+    this.debugLine("removing event listeners")
 
-    ws.removeEventListener("open", this._handleOpen)
-    ws.removeEventListener("error", this._handleError)
-    ws.removeEventListener("message", this._handleMessage)
-    ws.removeEventListener("close", this._handleClose)
+    ws.removeEventListener("open", this.handleOpen)
+    ws.removeEventListener("error", this.handleError)
+    ws.removeEventListener("message", this.handleMessage)
+    ws.removeEventListener("close", this.handleClose)
   }
 
-  _handleOpen = (evt: Event) => {
+  private handleOpen = (evt: Event) => {
     const { ws, messageQueue } = this.state
 
-    this._debugLine(
+    this.debugLine(
       "The Websocket has successfully established a connection to the websocket server."
     )
     this.setState({ attempts: 1 }) // This line is so that reconnecting resets the retry cooloff.
@@ -131,29 +131,29 @@ class ReactWebsocket extends Component<
 
     while (messageQueue.length > 0) {
       const message = messageQueue.pop()
-      this._debugLine("Dequeuing message", message)
+      this.debugLine("Dequeuing message", message)
       // This postfix operator is useful because we know message can never be undefined.
       ws.send(message!)
     }
   }
 
-  _handleError = (evt: Event) => {
+  private handleError = (evt: Event) => {
     if (this.props.onError) {
       this.props.onError(evt)
     }
   }
 
-  _handleMessage = (evt: MessageEvent) => {
+  private handleMessage = (evt: MessageEvent) => {
     try {
-      this._debugLine(`Message received from the websocket server: ${evt.data}`)
+      this.debugLine(`Message received from the websocket server: ${evt.data}`)
       this.props.onMessage(JSON.parse(evt.data))
     } catch (err) {
-      this._debugLine(err)
+      this.debugLine(err)
     }
   }
 
-  _handleClose = (evt: CloseEvent) => {
-    this._debugLine(
+  private handleClose = (evt: CloseEvent) => {
+    this.debugLine(
       `The Websocket client has closed the connection to the websocket server. Code: ${
         evt.code
       }, Reason: ${evt.reason}`
@@ -164,20 +164,20 @@ class ReactWebsocket extends Component<
     }
 
     if (this.props.autoReconnect) {
-      this._debugLine(
+      this.debugLine(
         "Attempting to reestablish connection to the websocket server."
       )
-      this._reconnect()
+      this.retryToConnect()
     }
   }
 
-  _debugLine = (...args: any[]) => {
+  private debugLine = (...args: any[]) => {
     if (this.props.debug) {
       console.log(...args)
     }
   }
 
-  _generateInterval = (k: number) => {
+  private generateInterval = (k: number) => {
     const { reconnectIntervalInMilliSeconds } = this.props
 
     if (
@@ -195,24 +195,24 @@ class ReactWebsocket extends Component<
     return Math.min(30, Math.pow(2, k) - 1) * 1000
   }
 
-  _reconnect = () => {
-    this._clearTimer()
+  private retryToConnect = () => {
+    this.clearTimer()
 
-    const time = this._generateInterval(this.state.attempts)
+    const time = this.generateInterval(this.state.attempts)
 
     this.timerHandle = window.setTimeout(() => {
-      this._resetWebsocket()
-      this._removeListeners()
-      this._addListeners()
+      this.setState({ attempts: this.state.attempts + 1 })
+      this.reconnect()
     }, time)
   }
 
-  _resetWebsocket = () => {
-    this.setState({ attempts: this.state.attempts + 1 })
+  reconnect = () => {
+    this.removeListeners()
     this.setState({ ws: new WebSocket(this.props.url, this.props.protocols) })
+    this.addListeners()
   }
 
-  _clearTimer = () => {
+  private clearTimer = () => {
     if (this.timerHandle) {
       clearTimeout(this.timerHandle)
       this.timerHandle = 0
@@ -225,7 +225,7 @@ class ReactWebsocket extends Component<
     if (ws && ws.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify(message))
     } else {
-      this._debugLine("Enqueuing message", message)
+      this.debugLine("Enqueuing message", message)
       messageQueue.push(JSON.stringify(message))
     }
   }

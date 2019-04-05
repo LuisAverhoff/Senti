@@ -4,7 +4,7 @@ import SearchBar from "../Search"
 
 describe("Unit Test Suite for <SearchBar /> Component", () => {
   const shallow = createShallow({ dive: true })
-  const emptyMockFunction = jest.fn((_value: string) => {})
+  const emptyMockFunction = jest.fn(() => {})
 
   it("renders search bar without crashing", () => {
     const wrapper = shallow(
