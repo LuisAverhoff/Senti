@@ -122,10 +122,10 @@ describe("Unit test for <ReactWebsocket /> component", () => {
 
     setTimeout(() => {
       const client = wrapper.instance() as ReactWebsocket
-      expect(client.state.attempts).toBe(2)
+      expect(client.state.attempts).toBeGreaterThan(1)
       wrapper.unmount()
       done()
-    }, 210)
+    }, 110)
   })
 
   it("Dont reconnect when autoreconnect is false", async done => {
@@ -147,6 +147,6 @@ describe("Unit test for <ReactWebsocket /> component", () => {
       expect(client.state.attempts).toBe(1)
       wrapper.unmount()
       done()
-    }, 210)
+    }, 110)
   })
 })
