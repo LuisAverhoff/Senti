@@ -3,6 +3,7 @@ import { Component } from "react"
 interface ReactWebsocketProps {
   /*
    * The url the websocket connection is listening to.
+   * Defaults to ws://localhost:8000 if an invalid url was provided.
    */
   url: string
   /*
@@ -55,7 +56,8 @@ class ReactWebsocket extends Component<
 
   static defaultProps = {
     debug: false,
-    autoReconnect: true
+    autoReconnect: true,
+    url: "ws://localhost:8000"
   }
 
   constructor(props: ReactWebsocket["props"]) {
