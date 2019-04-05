@@ -1,6 +1,6 @@
 # Senti
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/c437dce4-1904-4031-b8ec-4a83ef1b9782/deploy-status)](https://app.netlify.com/sites/senti/deploys)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/c437dce4-1904-4031-b8ec-4a83ef1b9782/deploy-status)](https://app.netlify.com/sites/senti/deploys) [![Codecov Coverage](https://img.shields.io/codecov/c/github/LuisAverhoff/Senti/master.svg?style=flat-square)](https://codecov.io/gh/LuisAverhoff/Senti/)
 
 This application allows users to make queries on a specific person or product and see if there is a positive or negative trend assoicated with this person or product. Main depenencies for this application are:
 
@@ -29,7 +29,7 @@ You will also see any lint errors in the console.
 
 ### `yarn test`
 
-Launches the test runner in the interactive watch mode. You can also run `yarn test:watch` to run everytime there is a change in the test and/or component file or `yarn test:coverage` to show the percentage of code that have been covered by the tests.<br>
+Launches the test runner in the interactive watch mode. You can also run `yarn test:watch` to run everytime there is a change in the test and/or component file.<br>
 
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
