@@ -121,7 +121,7 @@ class SearchPage extends Component<SearchProps, SearchState> {
     this.updateBarChart(message)
   }
 
-  updatePieChart = (message: any) => {
+  private updatePieChart = (message: any) => {
     let polarity = message.polarityIndex
 
     this.setState(state => {
@@ -146,7 +146,7 @@ class SearchPage extends Component<SearchProps, SearchState> {
     })
   }
 
-  updateBarChart(message: any) {
+  private updateBarChart = (message: any) => {
     if (Object.keys(message.hashtags).length == 0) {
       return
     }
@@ -184,7 +184,7 @@ class SearchPage extends Component<SearchProps, SearchState> {
     })
   }
 
-  resetCharts = () => {
+  private resetCharts = () => {
     this.hashtags = {}
 
     this.setState(state => {
@@ -212,7 +212,7 @@ class SearchPage extends Component<SearchProps, SearchState> {
     })
   }
 
-  HandleSearchRequest(query: string) {
+  HandleSearchRequest = (query: string) => {
     if (query) {
       if (this.webSocketRef.current) {
         this.webSocketRef.current.sendMessage({ track: query })
@@ -224,7 +224,7 @@ class SearchPage extends Component<SearchProps, SearchState> {
     }
   }
 
-  getKLargestHashtags = (k: number, hashtags: HashtagFreqDict) => {
+  private getKLargestHashtags = (k: number, hashtags: HashtagFreqDict) => {
     const heap = new MaxHeap()
 
     Object.keys(hashtags).forEach(item => {

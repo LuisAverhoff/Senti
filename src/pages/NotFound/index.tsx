@@ -1,11 +1,8 @@
 import React from "react"
 import { Link } from "react-router-dom"
-import { RouteComponentProps } from "react-router"
 import "../../assets/css/404.css"
 
-interface NotFoundProps extends RouteComponentProps<{}> {}
-
-const NotFound: React.FunctionComponent<NotFoundProps> = () => (
+const NotFound = () => (
   <div id='notfound'>
     <div className='notfound'>
       <div className='notfound-404'>
