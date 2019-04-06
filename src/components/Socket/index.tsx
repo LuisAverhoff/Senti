@@ -198,12 +198,13 @@ class ReactWebsocket extends Component<
   }
 
   private retryToConnect = () => {
+    const { attempts } = this.state
     this.clearTimer()
 
-    const time = this.generateInterval(this.state.attempts)
+    const time = this.generateInterval(attempts)
 
     this.timerHandle = window.setTimeout(() => {
-      this.setState({ attempts: this.state.attempts + 1 })
+      this.setState({ attempts: attempts + 1 })
       this.reconnect()
     }, time)
   }

@@ -75,15 +75,21 @@ describe("Unit test for <ReactWebsocket /> component", () => {
     wrapper.unmount()
   })
 
-  it("The message should get stored in the queue if not connected to the webserver", () => {
+  it("The websocket is able to the send messages to the server", async () => {
+    const mockServer = new WS(fakeUrl, { jsonProtocol: true })
     const wrapper = shallow(
       <ReactWebsocket url={fakeUrl} onMessage={emptyMockFunction} />
     )
 
+    await mockServer.connected
+
     const client = wrapper.instance() as ReactWebsocket
     client.sendMessage({ track: "test" })
 
-    expect(client.state.messageQueue.length).toBe(1)
+    await expect(mockServer).toReceiveMessage({ track: "test" })
+    expect(mockServer).toHaveReceivedMessages([{ track: "test" }])
+
+    mockServer.close()
     wrapper.unmount()
   })
 
@@ -107,13 +113,18 @@ describe("Unit test for <ReactWebsocket /> component", () => {
   })
 
   it("Attempt to reconnect to the webserver when autoreconnect is true", async done => {
-    const mockServer = new WS(fakeUrl)
+    const onCloseMockFunction = jest.fn((_code?: number, _reason?: string) => {
+      console.log("onClose function was called")
+    })
+
+    let mockServer = new WS(fakeUrl)
     const wrapper = shallow(
       <ReactWebsocket
         url={fakeUrl}
         onMessage={emptyMockFunction}
         autoReconnect={true}
         reconnectIntervalInMilliSeconds={100}
+        onClose={onCloseMockFunction}
       />
     )
 
@@ -121,14 +132,21 @@ describe("Unit test for <ReactWebsocket /> component", () => {
     mockServer.close()
 
     setTimeout(() => {
-      const client = wrapper.instance() as ReactWebsocket
-      expect(client.state.attempts).toBeGreaterThan(1)
+      expect(onCloseMockFunction.mock.calls.length).toBe(2)
       wrapper.unmount()
       done()
     }, 110)
+
+    mockServer = new WS(fakeUrl)
+    await mockServer.connected
+    mockServer.close()
   })
 
   it("Dont reconnect when autoreconnect is false", async done => {
+    const onCloseMockFunction = jest.fn((_code?: number, _reason?: string) => {
+      console.log("onClose function was called")
+    })
+
     const mockServer = new WS(fakeUrl)
     const wrapper = shallow(
       <ReactWebsocket
@@ -136,6 +154,7 @@ describe("Unit test for <ReactWebsocket /> component", () => {
         onMessage={emptyMockFunction}
         autoReconnect={false}
         reconnectIntervalInMilliSeconds={100}
+        onClose={onCloseMockFunction}
       />
     )
 
@@ -143,8 +162,7 @@ describe("Unit test for <ReactWebsocket /> component", () => {
     mockServer.close()
 
     setTimeout(() => {
-      const client = wrapper.instance() as ReactWebsocket
-      expect(client.state.attempts).toBe(1)
+      expect(onCloseMockFunction.mock.calls.length).toBe(1)
       wrapper.unmount()
       done()
     }, 110)

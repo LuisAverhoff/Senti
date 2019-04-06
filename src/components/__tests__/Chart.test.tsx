@@ -3,6 +3,7 @@ import Chart from "../Chart"
 import { shallow } from "enzyme"
 import { ChartData } from "chart.js"
 import { PieChartSkeleton } from "../../util/skeletons"
+import CreateSkeletonLoader from "../Loader"
 
 describe("Unit Test Suite for <Chart /> Component", () => {
   const skeletonPieMockFunction = jest.fn(PieChartSkeleton)
@@ -42,6 +43,6 @@ describe("Unit Test Suite for <Chart /> Component", () => {
       />
     )
 
-    expect(wrapper.find("CreateSkeletonLoader").exists()).toBe(true)
+    expect(wrapper.find(CreateSkeletonLoader).exists()).toBe(true)
   })
 })
